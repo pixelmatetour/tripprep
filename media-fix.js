@@ -7,6 +7,7 @@ function updateSelectAll(){
   selectAllBtn.classList.toggle('has-selection',selected.size>0);
 }
 function guardImportedImages(){
+  if(typeof imported!=='undefined')globalThis.imported=imported;
   mediaPool.querySelectorAll('.media-card img:not([data-image-guard])').forEach(img=>{
     img.dataset.imageGuard='true';
     const fail=()=>img.closest('.media-card')?.classList.add('image-error');
