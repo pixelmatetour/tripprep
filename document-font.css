@@ -1,0 +1,30 @@
+/* The Aa control changes typography inside the printable pages only. */
+.page .cover-kicker{font-size:calc(10pt * var(--fs-scale))}
+.page.cover h2{font-size:calc(42pt * var(--fs-scale))}
+.page .cover-meta{font-size:calc(13pt * var(--fs-scale))}
+.page .section-label{font-size:calc(9pt * var(--fs-scale))}
+.page h3{font-size:calc(26pt * var(--fs-scale))}
+.page .page-no{font-size:calc(9pt * var(--fs-scale))}
+.page .lead{font-size:calc(14pt * var(--fs-scale))}
+.page .fact small{font-size:calc(8pt * var(--fs-scale))}
+.page .fact strong{font-size:calc(12pt * var(--fs-scale))}
+.page .block-title{font-size:calc(11pt * var(--fs-scale))}
+.page .text-block{font-size:calc(10.5pt * var(--fs-scale))}
+.page .footer-mark{font-size:calc(7pt * var(--fs-scale))}
+.page .day-badge span{font-size:calc(7pt * var(--fs-scale))}
+.page .day-badge b{font-size:calc(20pt * var(--fs-scale))}
+.page .day-title h3{font-size:calc(24pt * var(--fs-scale))}
+.page .day-title p{font-size:calc(10pt * var(--fs-scale))}
+.page .schedule p{font-size:calc(11pt * var(--fs-scale))}
+.page .hotel{font-size:calc(9.5pt * var(--fs-scale))}
+.page .check-item{font-size:calc(10.5pt * var(--fs-scale))}
+.page .summary-table{font-size:calc(9.5pt * var(--fs-scale))}
+.page .doc-fun-fact{font-size:calc(9.5pt * var(--fs-scale))}
+.page .compact-day-badge small{font-size:calc(5.5pt * var(--fs-scale))}
+.page .compact-day-badge b{font-size:calc(14pt * var(--fs-scale))}
+.page .compact-day-title h4{font-size:calc(16pt * var(--fs-scale))}
+.page .compact-day-title p{font-size:calc(8.5pt * var(--fs-scale))}
+.page .compact-day-detail{font-size:calc(9.5pt * var(--fs-scale))}
+.page .compact-day-fact{font-size:calc(8.5pt * var(--fs-scale))}
+.page .compact-day-hotel{font-size:calc(8.5pt * var(--fs-scale))}
+.page .compact-overflow-note{font-size:calc(7.5pt * var(--fs-scale))}
