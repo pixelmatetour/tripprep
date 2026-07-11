@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TripPrep Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="media-fix.css" />
+  <link rel="stylesheet" href="project-manager.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">P</span><div><strong>TripPrep Studio</strong><small>เตรียมเอกสารให้พร้อม ก่อนออกเดินทาง</small></div><input class="project-name" id="projectName" value="Dolomites 2026" aria-label="ชื่อโปรเจกต์"></div>
+    <div class="actions"><span id="saveState">บันทึกอัตโนมัติ</span><button class="btn ghost compact" id="newProjectBtn">＋ ใหม่</button><button class="btn ghost compact" id="openProjectsBtn">▣ โปรเจกต์</button><button class="btn ghost compact" id="exportJsonBtn">↓ JSON</button><button class="btn ghost compact" id="importJsonBtn">↑ JSON</button><input type="file" id="jsonFile" accept="application/json,.json" hidden><button class="btn ghost" id="resetBtn">เริ่มใหม่</button><button class="btn primary" id="printBtn">ดาวน์โหลด PDF</button></div>
+  </header>
+  <main class="workspace">
+    <aside class="editor">
+      <div class="editor-head"><p class="eyebrow">DOCUMENT BUILDER</p><h1>ข้อมูลทริป</h1><p>กรอกข้อมูลด้านล่าง พรีวิวจะอัปเดตทันที</p><button class="import-launch" id="importLaunch">↗ นำเข้าข้อมูลจากเว็บไซต์</button></div>
+      <nav class="tabs" aria-label="ส่วนแก้ไข">
+        <button class="tab active" data-tab="overview">ภาพรวม</button><button class="tab" data-tab="details">ข้อมูลสำคัญ</button><button class="tab" data-tab="itinerary">รายวัน</button><button class="tab" data-tab="packing">เช็กลิสต์</button>
+      </nav>
+      <section class="panel active" id="overview">
+        <label>ชื่อทริป<input data-field="title" /></label>
+        <div class="grid2"><label>คำโปรย<input data-field="subtitle" /></label><label>ประเภททริป<input data-field="tripType" /></label></div>
+        <div class="grid2"><label>วันเริ่มต้น<input type="date" data-field="startDate" /></label><label>วันสิ้นสุด<input type="date" data-field="endDate" /></label></div>
+        <label>ภาพปก<input type="file" id="coverUpload" accept="image/*" /><span class="hint">JPG หรือ PNG แนวนอน/แนวตั้งก็ได้</span></label>
+        <label>แนะนำทริป<textarea rows="6" data-field="intro"></textarea></label>
+        <div class="grid2"><label>จำนวนสมาชิก<input data-field="groupSize" /></label><label>พาหนะ<input data-field="transport" /></label></div>
+        <label>สถานที่นัดหมาย<input data-field="meetingPoint" /></label>
+      </section>
+      <section class="panel" id="details">
+        <div class="grid2"><label>จุดหมาย/ประเทศ<input data-field="destinations" /></label><label>Time zone<input data-field="timezone" /></label></div>
+        <div class="grid2"><label>อุณหภูมิ<input data-field="weather" /></label><label>สกุลเงิน<input data-field="currency" /></label></div>
+        <label>เที่ยวบิน<textarea rows="5" data-field="flights"></textarea></label>
+        <label>ที่พัก<textarea rows="5" data-field="hotels"></textarea></label>
+        <label>ผู้ดูแลทริป / เบอร์ติดต่อ<textarea rows="4" data-field="leaders"></textarea></label>
+        <label>ข้อมูลฉุกเฉิน<textarea rows="4" data-field="emergency"></textarea></label>
+        <label>หมายเหตุสำคัญ<textarea rows="4" data-field="notes"></textarea></label>
+      </section>
+      <section class="panel" id="itinerary">
+        <div id="daysEditor"></div><button class="btn add" id="addDayBtn">+ เพิ่มวันเดินทาง</button>
+      </section>
+      <section class="panel" id="packing">
+        <label>เอกสารที่ต้องเตรียม<textarea rows="7" data-field="documents"></textarea><span class="hint">ขึ้นบรรทัดใหม่เพื่อแยกแต่ละรายการ</span></label>
+        <label>Packing list<textarea rows="11" data-field="packing"></textarea><span class="hint">ขึ้นบรรทัดใหม่เพื่อแยกแต่ละรายการ</span></label>
+      </section>
+    </aside>
+    <section class="preview-shell"><div class="preview-toolbar"><div><strong>ตัวอย่างเอกสาร</strong><span id="pageCount"></span></div><div class="preview-tools"><div class="font-control"><span>Aa</span><button id="fontOut">−</button><span id="fontLabel">100%</span><button id="fontIn">+</button></div><div class="zoom"><button id="zoomOut">−</button><span id="zoomLabel">72%</span><button id="zoomIn">+</button></div></div></div><div class="preview" id="documentPreview"></div></section>
+  </main>
+  <dialog id="importDialog" class="import-dialog">
+    <form method="dialog" class="dialog-head"><div><p class="eyebrow">WEB IMPORT</p><h2>นำเข้าจากเว็บไซต์</h2><p>ดึงข้อความและรูปภาพมาเก็บใน Media Pool</p></div><button class="dialog-close" value="cancel">×</button></form>
+    <div class="import-bar"><input type="url" id="importUrl" value="https://pixelmate.photo/tour/dolomite-26/" placeholder="https://example.com/trip"><button class="btn primary" id="importBtn">ดึงข้อมูล</button></div>
+    <div id="importStatus" class="import-status">ใส่ URL ของหน้าทริป แล้วกด “ดึงข้อมูล”</div>
+    <div id="importContent" hidden>
+      <div class="import-summary"><div><span>ชื่อที่พบ</span><strong id="foundTitle">—</strong></div><div><span>รูปภาพ</span><strong id="foundCount">0 รูป</strong></div><button class="btn ghost" id="applyTextBtn">ใช้ชื่อและรายละเอียด</button></div>
+      <div class="pool-head"><div><h3>Media Pool</h3><p>เลือกรูปเข้าเอกสาร หรือกำหนดเป็นภาพปก</p></div><div class="pool-actions"><button class="btn select-all" id="selectAllBtn">เลือกทั้งหมด</button><button class="btn add-selected" id="addSelectedBtn">เพิ่มรูปที่เลือกเข้าเอกสาร</button></div></div>
+      <div class="media-pool" id="mediaPool"></div>
+    </div>
+  </dialog>
+  <dialog id="projectsDialog" class="projects-dialog"><form method="dialog" class="dialog-head"><div><p class="eyebrow">MY PROJECTS</p><h2>โปรเจกต์ TripPrep</h2><p>สลับงานได้โดยข้อมูลแต่ละทริปจะบันทึกแยกกัน</p></div><button class="dialog-close" value="cancel">×</button></form><div id="projectsList" class="projects-list"></div></dialog>
+  <script src="app.js"></script>
+  <script src="media-fix.js"></script>
+  <script src="project-manager.js"></script>
+</body>
+</html>
