@@ -2,6 +2,13 @@ const decode=s=>s.replace(/&nbsp;|&#160;/g,' ').replace(/&amp;|&#038;|&#38;/g,'&
 const clean=s=>decode(s).replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 function attr(tag,name){return decode(tag.match(new RegExp(`${name}=["']([^"']+)`,'i'))?.[1]||'')}
 function absolute(value,base){try{return new URL(decode(value),base).href}catch{return''}}
+function originalImage(value,base){
+  const absoluteUrl=absolute(value,base);if(!absoluteUrl)return'';
+  try{const u=new URL(absoluteUrl);u.pathname=u.pathname.replace(/-\d{2,5}x\d{2,5}(?=\.(?:jpe?g|png|webp|avif)$)/i,'');return u.href}catch{return absoluteUrl}
+}
+function largestSrcset(value){
+  return value.split(',').map(item=>{const parts=item.trim().split(/\s+/);const score=parseFloat(parts[1])||0;return{url:parts[0],score}}).filter(x=>x.url).sort((a,b)=>b.score-a.score)[0]?.url||'';
+}
 function parse(html,url){
   const metas=[...html.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0]);
   const meta=key=>{const t=metas.find(x=>attr(x,'property')===key||attr(x,'name')===key);return t?attr(t,'content'):''};
@@ -9,9 +16,9 @@ function parse(html,url){
   const body=html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]||html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1]||html;
   const paragraphs=[...body.matchAll(/<(?:p|h2|h3|h4|li)\b[^>]*>([\s\S]*?)<\/(?:p|h2|h3|h4|li)>/gi)].map(m=>clean(m[1])).filter(x=>x.length>40&&!/cookie|privacy policy|wishlist requires/i.test(x));
   const og=clean(meta('og:description'));const description=(/^visit the post/i.test(og)||og.length<40?paragraphs.slice(0,6).join('\n\n'):og).slice(0,2600);
-  const imageSet=new Set();const add=v=>{const x=absolute(v,url);if(x&&/^https?:/.test(x)&&!/(logo|icon|avatar|favicon|emoji|qr-official|line_add_friends)/i.test(x))imageSet.add(x)};
+  const imageSet=new Set();const add=v=>{const x=originalImage(v,url);if(x&&/^https?:/.test(x)&&!/(logo|icon|avatar|favicon|emoji|placeholder|blur|lazy|qr-official|line_add_friends)/i.test(x))imageSet.add(x)};
   add(meta('og:image'));
-  for(const m of html.matchAll(/<img\b[^>]*>/gi)){const t=m[0];add(attr(t,'data-lazy-src')||attr(t,'data-src')||attr(t,'src'));const set=attr(t,'srcset')||attr(t,'data-srcset');if(set)add(set.split(',').map(x=>x.trim().split(/\s+/)[0]).pop())}
+  for(const m of html.matchAll(/<img\b[^>]*>/gi)){const t=m[0];const set=attr(t,'srcset')||attr(t,'data-srcset');add(attr(t,'data-orig-file')||attr(t,'data-large-file')||attr(t,'data-full-url')||(set&&largestSrcset(set))||attr(t,'data-lazy-src')||attr(t,'data-src')||attr(t,'src'))}
   return{sourceUrl:url,title,description,images:[...imageSet].slice(0,100)};
 }
 export async function onRequestGet({request}){

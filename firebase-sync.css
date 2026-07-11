@@ -1,1 +1,1 @@
-.cloud-btn{background:#fff7e6;color:#8c5b12;border:1px solid #ead29b}.cloud-btn.connected{background:#e9f6ee;color:#24633c;border-color:#b8dcc5}
+.cloud-btn{display:inline-flex;align-items:center;justify-content:center;background:#fff7e6;color:#8c5b12;border:1px solid #ead29b;border-radius:9px;white-space:nowrap}.cloud-btn.connected{background:#e9f6ee;color:#24633c;border-color:#b8dcc5}
